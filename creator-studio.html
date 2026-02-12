@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio | Bhuban</title>
+    <link rel="icon" type="image/png" href="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .close-btn {
+            cursor: pointer;
+        }
+
+        .upload-zone {
+            border: 2px dashed #444;
+            border-radius: 20px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(255, 59, 48, 0.05);
+        }
+
+        .upload-zone.active {
+            border-color: var(--accent);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: #1a1a1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .quality-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quality-btn {
+            padding: 12px;
+            background: #1a1a1e;
+            border: 2px solid #333;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quality-btn:hover {
+            border-color: #666;
+        }
+
+        .quality-btn.active {
+            border-color: var(--accent);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .publish-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .publish-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .publish-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .thumbnail-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 12px;
+            margin-top: 10px;
+            display: none;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>📹 Creator Studio</h1>
+        <i data-lucide="x" class="close-btn" onclick="window.location.href='index.html'"></i>
+    </div>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+        <i data-lucide="upload-cloud" style="width:60px; height:60px; color:#666; margin-bottom:15px;"></i>
+        <h3 style="margin-bottom:10px;">Drag and drop video files</h3>
+        <p style="color:#888;">or click to browse</p>
+        <input type="file" id="file-input" accept="video/*,image/*" style="display:none;"
+            onchange="handleFileSelect(event)">
+    </div>
+
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <img id="thumbnail-preview" class="thumbnail-preview">
+
+    <div class="form-group">
+        <label>Title (required)</label>
+        <input type="text" id="video-title" placeholder="Add a title that describes your video">
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea id="video-desc" placeholder="Tell viewers about your video"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select id="video-category">
+            <option>Select category</option>
+            <option>Gaming</option>
+            <option>Music</option>
+            <option>Education</option>
+            <option>Entertainment</option>
+            <option>Sports</option>
+            <option>Technology</option>
+            <option>Vlog</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Upload Quality</label>
+        <div class="quality-selector">
+            <div class="quality-btn" onclick="selectQuality(this, '720p')">
+                <div style="font-weight:700;">HD</div>
+                <div style="font-size:12px; color:#888;">720p</div>
+            </div>
+            <div class="quality-btn active" onclick="selectQuality(this, '1080p')">
+                <div style="font-weight:700;">Full HD</div>
+                <div style="font-size:12px; color:#888;">1080p</div>
+            </div>
+            <div class="quality-btn" onclick="selectQuality(this, '1440p')">
+                <div style="font-weight:700;">2K</div>
+                <div style="font-size:12px; color:#888;">1440p</div>
+            </div>
+            <div class="quality-btn" onclick="selectQuality(this, '2160p')">
+                <div style="font-weight:700;">4K</div>
+                <div style="font-size:12px; color:#888;">2160p</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Visibility</label>
+        <select id="video-visibility">
+            <option>Public</option>
+            <option>Unlisted</option>
+            <option>Private</option>
+        </select>
+    </div>
+
+    <button class="publish-btn" id="publish-btn" onclick="publishVideo()">
+        <i data-lucide="upload" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;"></i>
+        Publish Video
+    </button>
+
+    <script>
+        lucide.createIcons();
+        let selectedFile = null;
+        let selectedQuality = '1080p';
+
+        function handleFileSelect(event) {
+            selectedFile = event.target.files[0];
+            if (!selectedFile) return;
+
+            const zone = document.getElementById('upload-zone');
+            zone.classList.add('active');
+            zone.innerHTML = `
+                <i data-lucide="check-circle" style="width:60px; height:60px; color:var(--accent); margin-bottom:15px;"></i>
+                <h3>${selectedFile.name}</h3>
+                <p style="color:#888;">${(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+            `;
+            lucide.createIcons();
+
+            // Show progress simulation
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            progressBar.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                }
+                progressFill.style.width = progress + '%';
+            }, 200);
+
+            // Show thumbnail preview
+            if (selectedFile.type.startsWith('image/') || selectedFile.type.startsWith('video/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('thumbnail-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        }
+
+        function selectQuality(btn, quality) {
+            document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedQuality = quality;
+        }
+
+        function publishVideo() {
+            const title = document.getElementById('video-title').value;
+            const desc = document.getElementById('video-desc').value;
+            const category = document.getElementById('video-category').value;
+            const visibility = document.getElementById('video-visibility').value;
+
+            if (!selectedFile || !title) {
+                alert('Please select a file and add a title');
+                return;
+            }
+
+            // Save to localStorage
+            const uploads = JSON.parse(localStorage.getItem('bhuban_uploads') || '[]');
+            uploads.push({
+                id: Date.now(),
+                title,
+                desc,
+                category,
+                visibility,
+                quality: selectedQuality,
+                fileName: selectedFile.name,
+                fileSize: selectedFile.size,
+                uploadDate: new Date().toISOString(),
+                views: 0,
+                likes: 0
+            });
+            localStorage.setItem('bhuban_uploads', JSON.stringify(uploads));
+
+            alert('✅ Video published successfully!');
+            window.location.href = 'index.html';
+        }
+
+        // Drag and drop
+        const zone = document.getElementById('upload-zone');
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.style.borderColor = 'var(--accent)';
+        });
+        zone.addEventListener('dragleave', () => {
+            zone.style.borderColor = '#444';
+        });
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('file-input').files = files;
+                handleFileSelect({ target: { files } });
+            }
+        });
+    </script>
+</body>
+
+</html>

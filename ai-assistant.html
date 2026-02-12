@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shree AI Assistant | Bhuban</title>
+    <link rel="icon" type="image/png" href="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent: #ff3b30;
+            --ai-accent: #00d4ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #1a1a1e, #0a0a0e);
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .header i {
+            cursor: pointer;
+        }
+
+        .ai-orb {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ai-accent), #0099ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
+            }
+        }
+
+        .ai-orb.listening {
+            animation: listening 0.5s infinite;
+        }
+
+        @keyframes listening {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, var(--ai-accent), #0099ff);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-left: auto;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ai-accent), #0099ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: var(--accent);
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.5;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--accent), #ff6b30);
+            border: none;
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 20px;
+            scrollbar-width: none;
+        }
+
+        .suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .suggestion-chip {
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .suggestion-chip:hover {
+            border-color: var(--ai-accent);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .input-container {
+            padding: 15px 20px;
+            background: #0a0a0e;
+            border-top: 1px solid #222;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 12px 20px;
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .input-box:focus {
+            border-color: var(--ai-accent);
+        }
+
+        .voice-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ai-accent), #0099ff);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-btn.listening {
+            animation: listening 0.5s infinite;
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ai-accent), #0099ff);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .typing-indicator {
+            display: none;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--ai-accent);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .status-bar {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .status-bar.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <i data-lucide="arrow-left" onclick="window.history.back()"></i>
+        <div class="ai-orb" id="ai-orb">
+            <i data-lucide="sparkles" style="width:30px; height:30px; color:#fff;"></i>
+        </div>
+        <div>
+            <h2 style="font-size:20px; font-weight:900;">🤖 Shree AI</h2>
+            <p style="font-size:12px; color:#888;" id="status-text">Ready to help</p>
+        </div>
+        <div class="ai-badge">VOICE ENABLED</div>
+    </div>
+
+    <div class="chat-container" id="chat-container">
+        <div class="message">
+            <div class="message-avatar">
+                <i data-lucide="sparkles" style="width:20px; height:20px;"></i>
+            </div>
+            <div class="message-content">
+                <strong>Hello! I'm Shree AI 👋</strong><br>
+                I'm your intelligent assistant. You can type or speak to me!<br><br>
+                Try saying: <strong>"Hey Shree"</strong> or <strong>"Hi Shree"</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="suggestions">
+        <div class="suggestion-chip" onclick="sendMessage('Hey Shree, what can you do?')">💬 What can you do?</div>
+        <div class="suggestion-chip" onclick="sendMessage('Upload a 4K video')">📹 Upload Guide</div>
+        <div class="suggestion-chip" onclick="sendMessage('Tell me the weather')">🌤️ Weather</div>
+        <div class="suggestion-chip" onclick="sendMessage('Tell me a joke')">😄 Tell a Joke</div>
+        <div class="suggestion-chip" onclick="sendMessage('How are you?')">👋 Say Hi</div>
+    </div>
+
+    <div class="status-bar" id="status-bar">Listening...</div>
+
+    <div class="input-container">
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">
+            <i data-lucide="mic" style="width:20px; height:20px; color:#fff;"></i>
+        </button>
+        <input type="text" class="input-box" id="user-input" placeholder="Type or speak to Shree..."
+            onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">
+            <i data-lucide="send" style="width:20px; height:20px; color:#fff;"></i>
+        </button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let recognition;
+        let isListening = false;
+        let synthesis = window.speechSynthesis;
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('user-input').value = transcript;
+                sendMessage(transcript);
+            };
+
+            recognition.onend = () => {
+                stopListening();
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopListening();
+            };
+        }
+
+        function toggleVoice() {
+            if (!recognition) {
+                alert('Voice recognition not supported in this browser. Please use Chrome or Edge.');
+                return;
+            }
+
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+                startListening();
+            }
+        }
+
+        function startListening() {
+            isListening = true;
+            document.getElementById('voice-btn').classList.add('listening');
+            document.getElementById('ai-orb').classList.add('listening');
+            document.getElementById('status-bar').classList.add('active');
+            document.getElementById('status-text').innerText = 'Listening...';
+        }
+
+        function stopListening() {
+            isListening = false;
+            document.getElementById('voice-btn').classList.remove('listening');
+            document.getElementById('ai-orb').classList.remove('listening');
+            document.getElementById('status-bar').classList.remove('active');
+            document.getElementById('status-text').innerText = 'Ready to help';
+        }
+
+        function speak(text) {
+            if (!synthesis) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            utterance.lang = 'en-US';
+
+            synthesis.speak(utterance);
+        }
+
+        function sendMessage(text) {
+            const input = document.getElementById('user-input');
+            const message = text || input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'message';
+            typing.innerHTML = `
+                <div class="message-avatar"><i data-lucide="sparkles" style="width:20px; height:20px;"></i></div>
+                <div class="message-content typing-indicator active">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            document.getElementById('chat-container').appendChild(typing);
+            lucide.createIcons();
+            scrollToBottom();
+
+            // Get AI response
+            setTimeout(() => {
+                typing.remove();
+                const response = getAIResponse(message);
+                addMessage(response.text, 'ai');
+                if (response.speak) speak(response.text);
+            }, 1500);
+        }
+
+        function getAIResponse(message) {
+            const msg = message.toLowerCase();
+
+            // Greetings
+            if (msg.includes('hey shree') || msg.includes('hi shree') || msg.includes('hello shree')) {
+                return {
+                    text: "Hello! 👋 I'm Shree, your AI assistant. I'm here to help you with anything - from uploading videos to answering questions. How can I assist you today?",
+                    speak: true
+                };
+            }
+
+            if (msg.includes('how are you')) {
+                return {
+                    text: "I'm doing great, thank you for asking! 😊 I'm always ready to help you. How can I assist you today?",
+                    speak: true
+                };
+            }
+
+            // Weather (simulated)
+            if (msg.includes('weather')) {
+                return {
+                    text: "🌤️ The weather today is sunny with a high of 75°F (24°C). Perfect day for creating content! Note: For real-time weather, I'll need API integration.",
+                    speak: true
+                };
+            }
+
+            // Video upload help
+            if (msg.includes('upload') || msg.includes('4k') || msg.includes('video')) {
+                return {
+                    text: "📹 To upload a video:\n1. Click the Upload icon\n2. Drag & drop your video\n3. Add title & description\n4. Select quality (HD/2K/4K)\n5. Choose visibility\n6. Click Publish!\n\nFor 4K, ensure your video is 2160p resolution.",
+                    speak: false
+                };
+            }
+
+            // Capabilities
+            if (msg.includes('what can you do') || msg.includes('help')) {
+                return {
+                    text: "I can help you with:\n\n✅ Video upload guidance\n✅ Quality settings\n✅ SEO optimization\n✅ Analytics insights\n✅ General questions\n✅ Weather updates\n✅ Jokes & entertainment\n\nJust ask me anything!",
+                    speak: false
+                };
+            }
+
+            // Jokes
+            if (msg.includes('joke')) {
+                const jokes = [
+                    "Why don't programmers like nature? It has too many bugs! 😄",
+                    "Why did the smartphone go to therapy? It had too many issues! 📱",
+                    "What's a computer's favorite snack? Microchips! 💻"
+                ];
+                return {
+                    text: jokes[Math.floor(Math.random() * jokes.length)],
+                    speak: true
+                };
+            }
+
+            // Default
+            return {
+                text: "I understand you're asking about: \"" + message + "\"\n\nI'm still learning! For now, I can help with video uploads, settings, and general questions. Try asking about uploading 4K videos or telling a joke!",
+                speak: false
+            };
+        }
+
+        function addMessage(text, type) {
+            const container = document.getElementById('chat-container');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+
+            const avatar = type === 'user'
+                ? '<div class="message-avatar"><i data-lucide="user" style="width:20px; height:20px;"></i></div>'
+                : '<div class="message-avatar"><i data-lucide="sparkles" style="width:20px; height:20px;"></i></div>';
+
+            msg.innerHTML = `
+                ${avatar}
+                <div class="message-content">${text.replace(/\n/g, '<br>')}</div>
+            `;
+            container.appendChild(msg);
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Auto-greet on load
+        setTimeout(() => {
+            speak("Hello! I'm Shree, your AI assistant. How can I help you today?");
+        }, 1000);
+    </script>
+</body>
+
+</html>

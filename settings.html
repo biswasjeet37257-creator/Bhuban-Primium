@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Bhuban</title>
+    <link rel="icon" type="image/png" href="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header i {
+            cursor: pointer;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #222;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #1a1a1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .toggle {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: 0.3s;
+        }
+
+        .toggle.active::after {
+            left: 25px;
+        }
+
+        .select-box {
+            padding: 8px 12px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: #1a1a1e;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <i data-lucide="arrow-left" onclick="window.location.href='index.html'"></i>
+        <h1>⚙️ Settings</h1>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Playback & Performance</div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Default Video Quality</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Choose your preferred playback quality</div>
+            </div>
+            <select class="select-box" id="quality-select" onchange="saveQuality(this.value)">
+                <option value="auto">Auto</option>
+                <option value="4k">4K (2160p)</option>
+                <option value="2k">2K (1440p)</option>
+                <option value="1080p">Full HD (1080p)</option>
+                <option value="720p">HD (720p)</option>
+                <option value="480p">SD (480p)</option>
+            </select>
+        </div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Auto-play</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Automatically play next video</div>
+            </div>
+            <div class="toggle active" onclick="toggleSetting(this, 'autoplay')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">HD on Mobile Data</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Use HD quality on cellular network</div>
+            </div>
+            <div class="toggle" onclick="toggleSetting(this, 'hd_mobile')"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Privacy & Security</div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Watch History</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Save videos you watch</div>
+            </div>
+            <div class="toggle active" onclick="toggleSetting(this, 'history')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Search History</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Save your searches</div>
+            </div>
+            <div class="toggle active" onclick="toggleSetting(this, 'search_history')"></div>
+        </div>
+
+        <div class="setting-item" onclick="clearData('history')">
+            <div>
+                <div style="font-weight:700;">Clear Watch History</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Remove all watched videos</div>
+            </div>
+            <i data-lucide="trash-2" style="color:#ff3b30;"></i>
+        </div>
+
+        <div class="setting-item" onclick="clearData('all')">
+            <div>
+                <div style="font-weight:700;">Clear All Data</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Reset app to default state</div>
+            </div>
+            <i data-lucide="alert-triangle" style="color:#ff3b30;"></i>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Notifications</div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Push Notifications</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Get notified about new content</div>
+            </div>
+            <div class="toggle active" onclick="toggleSetting(this, 'notifications')"></div>
+        </div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">Email Updates</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Receive updates via email</div>
+            </div>
+            <div class="toggle" onclick="toggleSetting(this, 'email')"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Legal & About</div>
+
+        <div class="setting-item" onclick="window.location.href='terms.html'">
+            <div style="font-weight:700;">Terms & Conditions</div>
+            <i data-lucide="chevron-right"></i>
+        </div>
+
+        <div class="setting-item" onclick="window.location.href='privacy.html'">
+            <div style="font-weight:700;">Privacy Policy</div>
+            <i data-lucide="chevron-right"></i>
+        </div>
+
+        <div class="setting-item">
+            <div>
+                <div style="font-weight:700;">App Version</div>
+                <div style="font-size:13px; color:#888; margin-top:4px;">Bhuban V18.0 Ultimate</div>
+            </div>
+            <span style="color:var(--accent); font-weight:700;">LATEST</span>
+        </div>
+    </div>
+
+    <div style="margin-top:40px; display:flex; gap:10px;">
+        <button class="btn btn-secondary" style="flex:1;" onclick="window.location.href='index.html'">Cancel</button>
+        <button class="btn" style="flex:1;" onclick="saveSettings()">Save Changes</button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Load saved settings
+        const settings = JSON.parse(localStorage.getItem('bhuban_settings') || '{}');
+        if (settings.quality) {
+            document.getElementById('quality-select').value = settings.quality;
+        }
+
+        function toggleSetting(toggle, key) {
+            toggle.classList.toggle('active');
+            const settings = JSON.parse(localStorage.getItem('bhuban_settings') || '{}');
+            settings[key] = toggle.classList.contains('active');
+            localStorage.setItem('bhuban_settings', JSON.stringify(settings));
+        }
+
+        function saveQuality(quality) {
+            const settings = JSON.parse(localStorage.getItem('bhuban_settings') || '{}');
+            settings.quality = quality;
+            localStorage.setItem('bhuban_settings', JSON.stringify(settings));
+        }
+
+        function clearData(type) {
+            if (type === 'all') {
+                if (confirm('⚠️ This will delete all your data including uploads, history, and settings. Continue?')) {
+                    localStorage.clear();
+                    alert('✅ All data cleared successfully');
+                    window.location.reload();
+                }
+            } else if (type === 'history') {
+                if (confirm('Clear watch history?')) {
+                    localStorage.removeItem('bhuban_history');
+                    alert('✅ History cleared');
+                }
+            }
+        }
+
+        function saveSettings() {
+            alert('✅ Settings saved successfully!');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

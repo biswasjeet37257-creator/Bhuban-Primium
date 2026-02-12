@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile | Bhuban</title>
+    <link rel="icon" type="image/png" href="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --accent: #ff3b30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            padding-bottom: 60px;
+        }
+
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1e, #0a0a0e);
+            border-bottom: 1px solid #222;
+        }
+
+        .profile-banner {
+            height: 150px;
+            background: linear-gradient(135deg, var(--accent), #ff6b30);
+            position: relative;
+        }
+
+        .profile-info {
+            padding: 20px;
+            text-align: center;
+            margin-top: -50px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333, #111);
+            border: 4px solid #000;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .edit-avatar {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: #1a1a1e;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .upload-card {
+            aspect-ratio: 16/9;
+            background: #1a1a1e;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .upload-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1a1a1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #252529;
+        }
+
+        .badge {
+            background: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-banner"></div>
+
+    <div class="profile-info">
+        <div class="profile-avatar">
+            <i data-lucide="user" style="width:50px; height:50px; color:#666;"></i>
+            <div class="edit-avatar">
+                <i data-lucide="camera" style="width:16px; height:16px; color:#fff;"></i>
+            </div>
+        </div>
+        <h1 style="font-size:24px; font-weight:900; margin-bottom:5px;">Bhuban Creator</h1>
+        <p style="color:#888; margin-bottom:15px;">@bhuban_pro • Creator since 2026</p>
+        <button
+            style="background:var(--accent); color:#fff; border:none; padding:10px 30px; border-radius:20px; font-weight:700; cursor:pointer;">
+            Edit Profile
+        </button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="upload-count">0</div>
+            <div class="stat-label">Uploads</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="total-views">0</div>
+            <div class="stat-label">Views</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="total-likes">0</div>
+            <div class="stat-label">Likes</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <i data-lucide="video"></i>
+            Your Uploads
+        </div>
+        <div class="video-grid" id="uploads-grid"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <i data-lucide="bookmark"></i>
+            Saved Videos
+        </div>
+        <div id="saved-list"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <i data-lucide="download"></i>
+            Downloads
+        </div>
+        <div id="downloads-list"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <i data-lucide="settings"></i>
+            Quick Actions
+        </div>
+        <div class="menu-item" onclick="window.location.href='creator-studio.html'">
+            <i data-lucide="upload"></i>
+            <div>Upload Video</div>
+        </div>
+        <div class="menu-item" onclick="window.location.href='analytics.html'">
+            <i data-lucide="bar-chart-2"></i>
+            <div>Analytics</div>
+        </div>
+        <div class="menu-item" onclick="window.location.href='ai-assistant.html'">
+            <i data-lucide="sparkles"></i>
+            <div>AI Assistant</div>
+            <div class="badge">NEW</div>
+        </div>
+        <div class="menu-item" onclick="window.location.href='settings.html'">
+            <i data-lucide="settings"></i>
+            <div>Settings</div>
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html'">
+            <i data-lucide="home"></i>
+            <div>Back to Home</div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Load user data
+        const uploads = JSON.parse(localStorage.getItem('bhuban_uploads') || '[]');
+        const saved = JSON.parse(localStorage.getItem('bhuban_saved') || '[]');
+        const downloads = JSON.parse(localStorage.getItem('bhuban_downloads') || '[]');
+
+        // Update stats
+        document.getElementById('upload-count').innerText = uploads.length;
+        document.getElementById('total-views').innerText = uploads.reduce((sum, v) => sum + (v.views || 0), 0).toLocaleString();
+        document.getElementById('total-likes').innerText = uploads.reduce((sum, v) => sum + (v.likes || 0), 0).toLocaleString();
+
+        // Render uploads
+        const uploadsGrid = document.getElementById('uploads-grid');
+        if (uploads.length === 0) {
+            uploadsGrid.innerHTML = '<p style="color:#888; grid-column:1/-1; text-align:center; padding:40px;">No uploads yet. Start creating!</p>';
+        } else {
+            uploadsGrid.innerHTML = uploads.map(v => `
+                <div class="upload-card">
+                    <div style="width:100%; height:100%; background:#111; display:flex; align-items:center; justify-content:center;">
+                        <i data-lucide="play-circle" style="width:40px; height:40px; color:#666;"></i>
+                    </div>
+                    <div class="upload-info">
+                        <div style="font-size:13px; font-weight:700; margin-bottom:3px;">${v.title}</div>
+                        <div style="font-size:11px; color:#888;">${v.quality} • ${v.visibility}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render saved videos
+        const savedList = document.getElementById('saved-list');
+        if (saved.length === 0) {
+            savedList.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">No saved videos</p>';
+        } else {
+            savedList.innerHTML = saved.slice(0, 3).map(v => `
+                <div class="menu-item">
+                    <i data-lucide="play-circle"></i>
+                    <div>${v.title}</div>
+                </div>
+            `).join('');
+        }
+
+        // Render downloads
+        const downloadsList = document.getElementById('downloads-list');
+        if (downloads.length === 0) {
+            downloadsList.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">No downloads yet</p>';
+        } else {
+            downloadsList.innerHTML = downloads.slice(0, 3).map(d => `
+                <div class="menu-item">
+                    <i data-lucide="download"></i>
+                    <div>
+                        <div style="font-weight:700;">${d.title}</div>
+                        <div style="font-size:12px; color:#888;">${d.quality} • ${d.size}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
