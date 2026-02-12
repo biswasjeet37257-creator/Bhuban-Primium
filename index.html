@@ -3,428 +3,297 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Superior SEO Engine (Algorithm V1.0) -->
-    <title>Bhuban | The World's Premium AI-Powered Video Sharing Platform</title>
-    <meta name="description"
-        content="Welcome to Bhuban, the next generation of video sharing. Featuring 4K playback, SHREE AI assistance, and premium creator tools. Experience the future of global content.">
-    <meta name="keywords"
-        content="Bhuban, video sharing, AI assistant, 4K video, creator studio, premium content, SHREE AI, global video platform">
-    <meta name="author" content="Bhuban Global">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://bhuban.app/">
-
-    <!-- Open Graph / Social Media Optimization (First Line Discovery) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bhuban.app/">
-    <meta property="og:title" content="Bhuban | The World's Premium AI-Powered Video Sharing Platform">
-    <meta property="og:description"
-        content="Join the revolution in video content. AI-integrated search, organic transitions, and creator monetization.">
-    <meta property="og:image" content="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png">
-
-    <!-- JSON-LD Structured Data for Search Engines -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "VideoGame",
-      "name": "Bhuban Platform",
-      "url": "https://bhuban.app/",
-      "logo": "this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png",
-      "description": "Premium global video sharing ecosystem with AI integration.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://bhuban.app/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-
-    <link rel="stylesheet" href="style.css">
-    <!-- Lucide Icons CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bhuban | Premium Video V11</title>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #000000;
+            --accent: #ff3b30;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --glass: rgba(15, 15, 20, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, sans-serif;
+        }
+
+        body {
+            background: #000 !important;
+            color: white !important;
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* ABSOLUTE HIDER FOR DESKTOP STUFF */
+        #desktop-header,
+        aside#sidebar,
+        #top-nav,
+        header {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            top: -9999px !important;
+        }
+
+        .video-grid {
+            padding: 15px 15px 120px 15px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            background: #000;
+        }
+
+        .video-card {
+            width: 100%;
+        }
+
+        .thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: red;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .dur {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .info {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .av {
+            width: 40px;
+            height: 40px;
+            background: #222;
+            border-radius: 50%;
+        }
+
+        .det h3 {
+            font-size: 17px;
+            margin-bottom: 5px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        .det p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* THE HARD LOCK BOTTOM NAV (V11.2 - REINFORCED) */
+        #mobile-bottom-nav {
+            display: flex !important;
+            position: fixed !important;
+            bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+            top: auto !important;
+            left: 12px !important;
+            right: 12px !important;
+            height: 72px !important;
+            background: var(--glass) !important;
+            backdrop-filter: blur(50px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
+            border-radius: 35px !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            z-index: 2147483647 !important;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #888;
+            text-decoration: none;
+            position: relative;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item i {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .create-btn {
+            background: var(--accent) !important;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white !important;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
+        }
+
+        #nav-indicator {
+            position: absolute;
+            height: 50px;
+            width: 70px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: -1;
+        }
+
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 2147483647;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 1s;
+            opacity: 1;
+        }
+
+        #splash.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #splash h1 {
+            font-size: 40px;
+            letter-spacing: -2px;
+            color: red;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Premium Opening Splash Screen -->
-    <div id="splash-screen">
-        <div class="splash-content">
-            <div class="splash-logo">
-                <img src="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png" alt="Bhuban"
-                    class="bash-img">
-                <h1 class="splash-text">Bhuban</h1>
-            </div>
-            <div class="splash-loader">
-                <div class="loader-bar"></div>
-            </div>
-            <p class="splash-motto">The Future of Video is Here</p>
-        </div>
+    <div id="splash">
+        <h1>BHUBAN V11</h1>
     </div>
 
-    <div class="app-container">
-        <!-- Navbar -->
-        <nav class="glass">
-            <div class="nav-left">
-                <button class="icon-btn" id="menu-toggle">
-                    <i data-lucide="menu"></i>
-                </button>
-                <div class="logo">
-                    <img src="this-is-a-video-sharing-app-like-a-youtube-and-the-1770747539971.png" alt="Bhuban Logo"
-                        class="logo-img">
-                    <span>Bhuban</span>
-                </div>
-            </div>
+    <main class="video-grid" id="grid"></main>
 
-            <div class="nav-center">
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Search with Omni-AI...">
-                    <button class="search-btn"><i data-lucide="search"></i></button>
-                    <!-- AI Search Insight Overlay -->
-                    <div id="ai-search-overlay" class="glass">
-                        <div class="ai-insight-header">
-                            <i data-lucide="sparkles" class="ai-sparkle"></i>
-                            <span>AI Insights</span>
-                        </div>
-                        <div id="ai-search-results">
-                            <!-- AI generated summaries appear here -->
+    <nav id="mobile-bottom-nav">
+        <div id="nav-indicator"></div>
+        <a href="#" class="nav-item active" data-index="0">
+            <i data-lucide="home"></i><span>Home</span>
+        </a>
+        <a href="#" class="nav-item" data-index="1">
+            <i data-lucide="compass"></i><span>Explore</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="create-btn"><i data-lucide="plus"></i></div>
+        </a>
+        <a href="#" class="nav-item" data-index="3">
+            <i data-lucide="library"></i><span>Library</span>
+        </a>
+        <a href="#" class="nav-item" data-index="4">
+            <i data-lucide="user"></i><span>You</span>
+        </a>
+    </nav>
+
+    <script>
+        // TRIPLE FALLBACK SCRIPT
+        (function () {
+            const vids = [
+                { id: 1, t: "Apple Vision Pro - The Future", c: "TechMaster", v: "1.2M", d: "12:45", q: "4K", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
+                { id: 2, t: "Extreme Adventure: Edge", c: "NatureFocus", v: "850K", d: "08:12", q: "18+", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=640" },
+                { id: 3, t: "Code Craft: Advanced Systems", c: "CodeCraft", v: "3.5M", d: "45:00", q: "4K", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640" }
+            ];
+
+            const grid = document.getElementById('grid');
+            grid.innerHTML = vids.map(v => `
+                <div class="video-card">
+                    <div class="thumb">
+                        <div class="badge">${v.q}</div>
+                        <img src="${v.img}" onerror="this.src='https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640'">
+                        <div class="dur">${v.d}</div>
+                    </div>
+                    <div class="info">
+                        <div class="av"></div>
+                        <div class="det">
+                            <h3>${v.t}</h3>
+                            <p>${v.c} • ${v.v} views</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            `).join('');
 
-            <div class="nav-right">
-                <div class="create-dropdown">
-                    <button class="icon-btn" id="create-btn" title="Create">
-                        <i data-lucide="video"></i>
-                        <span>Create</span>
-                    </button>
-                    <div class="dropdown-content glass">
-                        <a href="#" id="open-upload"><i data-lucide="upload"></i> Upload Video</a>
-                        <a href="#"><i data-lucide="radio"></i> Go Live</a>
-                    </div>
-                </div>
-                <button class="icon-btn" id="shree-toggle" title="Ask SHREE AI">
-                    <i data-lucide="sparkles" class="ai-sparkle"></i>
-                </button>
-                <button class="icon-btn"><i data-lucide="bell"></i></button>
-                <div id="auth-section">
-                    <button class="signin-btn" id="nav-signin-btn">Sign In</button>
-                </div>
-                <div class="user-profile-trigger" id="profile-trigger" style="display: none;">
-                    <div class="user-avatar"></div>
-                </div>
-            </div>
-        </nav>
+            const updateInd = (el) => {
+                const ind = document.getElementById('nav-indicator');
+                const nav = document.getElementById('mobile-bottom-nav');
+                if (!ind || !nav || !el) return;
+                const rect = el.getBoundingClientRect();
+                const nRect = nav.getBoundingClientRect();
+                const left = rect.left - nRect.left + (rect.width / 2) - (ind.offsetWidth / 2);
+                ind.style.transform = `translateX(${left}px)`;
+            };
 
-        <!-- Full-Screen Upload Modal -->
-        <div class="modal-overlay" id="upload-modal">
-            <div class="upload-container glass liquid-container">
-                <div class="upload-header">
-                    <h2>Upload Video</h2>
-                    <div class="stepper">
-                        <div class="step active" data-step="1">Details</div>
-                        <div class="step" data-step="2">Thumbnails</div>
-                        <div class="step" data-step="3">Visibility</div>
-                    </div>
-                    <button class="icon-btn" id="close-upload-modal"><i data-lucide="x"></i></button>
-                </div>
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    if (!item.querySelector('.create-btn')) updateInd(item);
+                });
+            });
 
-                <div class="upload-body">
-                    <!-- Step 1: Details -->
-                    <div class="upload-step-content" id="step-1-content">
-                        <div class="upload-dropzone" id="dropzone">
-                            <i data-lucide="upload-cloud" size="48"></i>
-                            <p>Drag and drop video files to upload</p>
-                            <span>Your videos will be private until you publish them.</span>
-                            <input type="file" id="video-file-input" hidden accept="video/*">
-                            <button class="auth-submit-btn"
-                                onclick="document.getElementById('video-file-input').click()">Select File</button>
-                        </div>
-                        <div class="upload-form" id="video-details-form" style="display: none;">
-                            <div class="input-group">
-                                <label>Title (required)</label>
-                                <input type="text" id="upload-title"
-                                    placeholder="Add a title that describes your video">
-                            </div>
-                            <div class="input-group">
-                                <label>Description</label>
-                                <textarea id="upload-desc" rows="4"
-                                    placeholder="Tell viewers about your video"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label>Category</label>
-                                <select id="upload-category">
-                                    <option value="Education">Education</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="Gaming">Gaming</option>
-                                    <option value="Tech">Tech</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: Thumbnails -->
-                    <div class="upload-step-content" id="step-2-content" style="display: none;">
-                        <h3>Select a Thumbnail</h3>
-                        <p>Select or upload a picture that shows what's in your video.</p>
-                        <div class="thumbnail-selector">
-                            <div class="thumb-option active" data-thumb="1">
-                                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=200"
-                                    alt="Thumb 1">
-                            </div>
-                            <div class="thumb-option" data-thumb="2">
-                                <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=200"
-                                    alt="Thumb 2">
-                            </div>
-                            <div class="thumb-option" data-thumb="3">
-                                <img src="https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?q=80&w=200"
-                                    alt="Thumb 3">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Visibility -->
-                    <div class="upload-step-content" id="step-3-content" style="display: none;">
-                        <h3>Visibility</h3>
-                        <p>Choose when to publish and who can see your video.</p>
-                        <div class="visibility-options">
-                            <label class="radio-group">
-                                <input type="radio" name="visibility" value="public" checked>
-                                <span><strong>Public</strong> Everyone can watch your video</span>
-                            </label>
-                            <label class="radio-group">
-                                <input type="radio" name="visibility" value="private">
-                                <span><strong>Private</strong> Only you and people you choose can watch</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="upload-footer">
-                    <div class="upload-progress-container" id="upload-progress-container" style="display: none;">
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="upload-progress-fill"></div>
-                        </div>
-                        <span id="upload-progress-text">0% uploaded</span>
-                    </div>
-                    <div class="upload-actions">
-                        <button class="action-btn" id="prev-step" style="display: none;">Back</button>
-                        <button class="auth-submit-btn" id="next-step" disabled>Next</button>
-                        <button class="auth-submit-btn" id="finish-upload" style="display: none;">Finish</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Auth Modal -->
-        <div class="modal-overlay" id="auth-modal">
-            <div class="auth-modal glass">
-                <div class="auth-header">
-                    <div class="logo">
-                        <i data-lucide="play" class="logo-icon"></i>
-                        <span>Bhuban</span>
-                    </div>
-                    <button class="icon-btn" id="close-auth"><i data-lucide="x"></i></button>
-                </div>
-
-                <div id="signin-form-container">
-                    <h2>Welcome Back</h2>
-                    <p>Continue to Bhuban with your account</p>
-                    <form class="auth-form" id="signin-form">
-                        <div class="input-group">
-                            <label>Username</label>
-                            <input type="text" id="signin-username" required placeholder="Enter your username">
-                        </div>
-                        <div class="input-group">
-                            <label>Password</label>
-                            <input type="password" id="signin-password" required placeholder="Enter your password">
-                        </div>
-                        <button type="submit" class="auth-submit-btn">Sign In</button>
-                        <div class="auth-divider"><span>OR</span></div>
-                        <button type="button" class="google-signin-btn" id="google-signin-btn">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                            Continue with Google
-                        </button>
-                    </form>
-                    <p class="auth-switch">Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
-                </div>
-
-                <div id="signup-form-container" style="display: none;">
-                    <h2>Create Account</h2>
-                    <p>Join the Bhuban community today</p>
-                    <form class="auth-form" id="signup-form">
-                        <div class="input-group">
-                            <label>Username</label>
-                            <input type="text" id="signup-username" required placeholder="Choose a username">
-                        </div>
-                        <div class="input-group">
-                            <label>Password</label>
-                            <input type="password" id="signup-password" required placeholder="Choose a password">
-                        </div>
-                        <div class="input-group">
-                            <label>Birth Date (Age Security)</label>
-                            <input type="date" id="signup-dob" required>
-                        </div>
-                        <button type="submit" class="auth-submit-btn">Sign Up</button>
-                    </form>
-                    <p class="auth-switch">Already have an account? <a href="#" id="switch-to-signin">Sign In</a></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Creator Hub / Monetization Modal -->
-        <div class="modal-overlay" id="creator-modal">
-            <div class="auth-modal glass liquid-container">
-                <div class="auth-header">
-                    <h2>Creator Hub</h2>
-                    <button class="icon-btn" id="close-creator"><i data-lucide="x"></i></button>
-                </div>
-                <div id="creator-status-card">
-                    <div class="earnings-grid">
-                        <div class="earnings-card">
-                            <span class="label">Total Earnings</span>
-                            <span class="value" id="total-earnings">$0.00</span>
-                        </div>
-                        <div class="earnings-card">
-                            <span class="label">Ad Revenue</span>
-                            <span class="value" id="ad-revenue">$0.00</span>
-                        </div>
-                    </div>
-                    <button class="auth-submit-btn" id="apply-creator-btn">Apply for Monetization</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Security Hub / Great Firewall Modal -->
-        <div class="modal-overlay" id="security-hub-modal">
-            <div class="auth-modal glass firewall-bg">
-                <div class="auth-header">
-                    <h2>Great Firewall Dashboard</h2>
-                    <button class="icon-btn" id="close-security"><i data-lucide="x"></i></button>
-                </div>
-                <div class="firewall-stats">
-                    <div class="status-indicator">
-                        <div class="pulse-dot green"></div>
-                        <span>Security: Active</span>
-                    </div>
-                    <div class="traffic-logs" id="traffic-logs">
-                        <!-- Logs injected by JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Liquid Motion SVG Filters -->
-        <svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg"
-            version="1.1">
-            <defs>
-                <filter id="liquid">
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-                        result="liquid" />
-                    <feComposite in="SourceGraphic" in2="liquid" operator="atop" />
-                </filter>
-            </defs>
-        </svg>
-
-        <!-- Profile Menu -->
-        <div class="profile-menu glass" id="profile-menu">
-            <div class="profile-header">
-                <div class="user-avatar large"></div>
-                <div class="profile-info">
-                    <h4 id="user-name">Guest User</h4>
-                    <p id="user-handle">@bhuban_guest</p>
-                </div>
-            </div>
-            <div class="profile-stats">
-                <div class="stat">
-                    <span class="stat-value">0</span>
-                    <span class="stat-label">Subs</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">0</span>
-                    <span class="stat-label">Videos</span>
-                </div>
-            </div>
-            <div class="sidebar-divider"></div>
-            <a href="#" class="sidebar-item"><i data-lucide="user"></i> Your Channel</a>
-            <a href="#" class="sidebar-item"><i data-lucide="settings"></i> Settings</a>
-            <a href="#" class="sidebar-item logout-red"><i data-lucide="log-out"></i> Logout</a>
-        </div>
-
-        <!-- SHREE AI Container -->
-        <div class="shree-container glass" id="shree-chat">
-            <div class="shree-header">
-                <div class="shree-logo">
-                    <i data-lucide="sparkles"></i>
-                    <span>SHREE AI</span>
-                </div>
-                <button class="icon-btn" id="close-shree"><i data-lucide="x"></i></button>
-            </div>
-            <div class="shree-messages" id="shree-messages">
-                <div class="message ai">
-                    Hello! I'm SHREE. I can help you analyze videos, debug code, or solve problems. How can I assist you
-                    today?
-                </div>
-            </div>
-            <div class="shree-input-area">
-                <input type="text" id="shree-input" placeholder="Ask SHREE anything...">
-                <button id="shree-send"><i data-lucide="send"></i></button>
-            </div>
-            <div class="shree-thinking" id="shree-thinking">
-                <div class="pulse-ring"></div>
-                <span>SHREE is thinking...</span>
-            </div>
-        </div>
-
-        <!-- Sidebar -->
-        <aside id="sidebar">
-            <div class="sidebar-section">
-                <a href="#" class="sidebar-item active">
-                    <i data-lucide="home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <i data-lucide="compass"></i>
-                    <span>Explore</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <i data-lucide="layers"></i>
-                    <span>Subscriptions</span>
-                </a>
-            </div>
-            <div class="sidebar-divider"></div>
-            <div class="sidebar-section">
-                <a href="#" class="sidebar-item">
-                    <i data-lucide="library"></i>
-                    <span>Library</span>
-                </a>
-                <a href="#" class="sidebar-item">
-                    <i data-lucide="history"></i>
-                    <span>History</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main id="main-content">
-            <div class="video-grid" id="video-grid">
-                <!-- Video Cards will be injected here -->
-            </div>
-        </main>
-
-        <!-- Mobile Bottom Navigation -->
-        <nav class="mobile-bottom-nav glass">
-            <a href="#" class="nav-item active"><i data-lucide="home"></i><span>Home</span></a>
-            <a href="#" class="nav-item"><i data-lucide="compass"></i><span>Explore</span></a>
-            <a href="#" class="nav-item"><i data-lucide="plus-circle" class="upload-pulse"></i></a>
-            <a href="#" class="nav-item"><i data-lucide="play-square"></i><span>Library</span></a>
-            <a href="#" class="nav-item" onclick="document.getElementById('profile-trigger').click()"><i
-                    data-lucide="user"></i><span>You</span></a>
-        </nav>
-    </div>
-
-    <script src="app.js"></script>
+            window.addEventListener('load', () => {
+                lucide.createIcons();
+                setTimeout(() => {
+                    document.getElementById('splash').classList.add('hide');
+                    const active = document.querySelector('.nav-item.active');
+                    updateInd(active);
+                }, 1500);
+            });
+        })();
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bhuban V12 | MOBILE FORCE</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #000;
+            --accent: #ff3b30;
+            --glass: rgba(18, 18, 23, 0.98);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000 !important;
+            color: #fff !important;
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* HIDE ALL DESKTOP JUNK */
+        header,
+        aside,
+        .desktop-only,
+        #top-nav,
+        #sidebar {
+            display: none !important;
+        }
+
+        .app {
+            padding: 15px 15px 150px 15px;
+        }
+
+        .v-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .v-card {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .v-thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .v-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .v-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: red;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .v-dur {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .v-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .v-av {
+            width: 44px;
+            height: 44px;
+            background: #222;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .v-det h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .v-det p {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* THE V12 GHOST HUB (ABSOLUTE BOTTOM LOCK) */
+        .bottom-nav {
+            display: flex !important;
+            position: fixed !important;
+            bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+            left: 12px !important;
+            right: 12px !important;
+            height: 76px !important;
+            background: var(--glass) !important;
+            backdrop-filter: blur(50px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
+            border-radius: 38px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            z-index: 2147483647 !important;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
+            top: auto !important;
+            /* PREVENT TOP STICK */
+        }
+
+        .n-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .n-item.active {
+            color: #fff;
+        }
+
+        .n-item span {
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .n-item i {
+            width: 26px;
+            height: 26px;
+        }
+
+        .plus-btn {
+            background: var(--accent);
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff !important;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
+        }
+
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 1s;
+        }
+
+        #splash h1 {
+            color: #ff3b30;
+            font-size: 42px;
+            letter-spacing: -2px;
+        }
+
+        #splash.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="splash">
+        <h1>BHUBAN V12</h1>
+    </div>
+
+    <div class="app">
+        <div class="v-grid" id="grid"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="n-item active"><i data-lucide="home"></i><span>Home</span></a>
+        <a href="#" class="n-item"><i data-lucide="compass"></i><span>Explore</span></a>
+        <a href="#" class="n-item">
+            <div class="plus-btn"><i data-lucide="plus"></i></div>
+        </a>
+        <a href="#" class="n-item"><i data-lucide="play-square"></i><span>Library</span></a>
+        <a href="#" class="n-item"><i data-lucide="user"></i><span>You</span></a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+
+        const data = [
+            { t: "Apple Vision Pro: The Review", c: "Bhuban Tech", v: "2.4M", d: "15:20", q: "4K", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
+            { t: "Cyberpunk City: Unreal 6", c: "Gaming Hub", v: "1.1M", d: "08:45", q: "HDR", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640" },
+            { t: "AI Revolution 2026", c: "SHREE AI", v: "500K", d: "12:00", q: "8K", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640" }
+        ];
+
+        document.getElementById('grid').innerHTML = data.map(v => `
+            <div class="v-card">
+                <div class="v-thumb">
+                    <div class="v-badge">${v.q}</div>
+                    <img src="${v.img}">
+                    <div class="v-dur">${v.d}</div>
+                </div>
+                <div class="v-info">
+                    <div class="v-av"></div>
+                    <div class="v-det">
+                        <h3>${v.t}</h3>
+                        <p>${v.c} • ${v.v} views</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('hide');
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>
