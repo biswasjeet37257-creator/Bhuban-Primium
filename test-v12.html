@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Bhuban V12 | MOBILE FORCE</title>
+    <title>Bhuban V12.3 | LIQUID FIX</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
@@ -28,12 +28,10 @@
             min-height: 100vh;
         }
 
-        /* HIDE ALL DESKTOP JUNK */
         header,
         aside,
         .desktop-only,
-        #top-nav,
-        #sidebar {
+        #top-nav {
             display: none !important;
         }
 
@@ -50,7 +48,6 @@
         .v-card {
             width: 100%;
             border-radius: 20px;
-            overflow: hidden;
         }
 
         .v-thumb {
@@ -101,7 +98,6 @@
             height: 44px;
             background: #222;
             border-radius: 50%;
-            flex-shrink: 0;
         }
 
         .v-det h3 {
@@ -115,25 +111,23 @@
             color: #aaa;
         }
 
-        /* THE V12 GHOST HUB (ABSOLUTE BOTTOM LOCK) */
+        /* THE V12.3 LIQUID HUB */
         .bottom-nav {
             display: flex !important;
             position: fixed !important;
             bottom: calc(24px + env(safe-area-inset-bottom)) !important;
             left: 12px !important;
             right: 12px !important;
-            height: 76px !important;
+            height: 72px !important;
             background: var(--glass) !important;
             backdrop-filter: blur(50px) saturate(200%) !important;
             -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
-            border-radius: 38px !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 36px !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
             z-index: 2147483647 !important;
             align-items: center;
             justify-content: space-around;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
-            top: auto !important;
-            /* PREVENT TOP STICK */
         }
 
         .n-item {
@@ -143,6 +137,8 @@
             color: #777;
             text-decoration: none;
             flex: 1;
+            z-index: 10;
+            cursor: pointer;
         }
 
         .n-item.active {
@@ -156,21 +152,42 @@
         }
 
         .n-item i {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
+        }
+
+        #nav-indicator {
+            position: absolute;
+            height: 54px;
+            width: 72px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            left: 0;
+            top: 50%;
+            margin-top: -27px;
+            /* Perfect vertical center */
+            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 1;
+            will-change: transform;
+            pointer-events: none;
+        }
+
+        #nav-indicator.moving {
+            filter: blur(1px);
         }
 
         .plus-btn {
             background: var(--accent);
-            width: 58px;
-            height: 58px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff !important;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
+            z-index: 10;
         }
 
         #splash {
@@ -184,12 +201,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 1s;
+            transition: 0.8s;
         }
 
         #splash h1 {
             color: #ff3b30;
-            font-size: 42px;
+            font-size: 38px;
             letter-spacing: -2px;
         }
 
@@ -202,7 +219,7 @@
 
 <body>
     <div id="splash">
-        <h1>BHUBAN V12</h1>
+        <h1>BHUBAN V12.3</h1>
     </div>
 
     <div class="app">
@@ -211,46 +228,25 @@
 
     <nav class="bottom-nav">
         <div id="nav-indicator"></div>
-        <a href="#" class="n-item active" data-index="0"><i data-lucide="home"></i><span>Home</span></a>
-        <a href="#" class="n-item" data-index="1"><i data-lucide="compass"></i><span>Explore</span></a>
-        <a href="#" class="n-item" data-index="2">
-            <div class="plus-btn"><i data-lucide="plus"></i></div>
-        </a>
-        <a href="#" class="n-item" data-index="3"><i data-lucide="play-square"></i><span>Library</span></a>
-        <a href="#" class="n-item" data-index="4"><i data-lucide="user"></i><span>You</span></a>
+        <a class="n-item active" data-index="0"><i data-lucide="home"></i><span>Home</span></a>
+        <a class="n-item" data-index="1"><i data-lucide="compass"></i><span>Explore</span></a>
+        <div class="n-item" style="pointer-events: none;">
+            <div class="plus-btn" style="pointer-events: auto;"><i data-lucide="plus"></i></div>
+        </div>
+        <a class="n-item" data-index="3"><i data-lucide="play-square"></i><span>Library</span></a>
+        <a class="n-item" data-index="4"><i data-lucide="user"></i><span>You</span></a>
     </nav>
-
-    <style>
-        #nav-indicator {
-            position: absolute;
-            height: 52px;
-            width: 70px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            /* Premium Apple Spring Curve */
-            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
-                width 0.45s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: -1;
-            will-change: transform, width;
-            bottom: 12px;
-        }
-
-        #nav-indicator.moving {
-            transform: scaleX(1.3);
-            filter: blur(1px);
-        }
-    </style>
 
     <script>
         lucide.createIcons();
 
-        const data = [
-            { t: "Apple Vision Pro: The Review", c: "Bhuban Tech", v: "2.4M", d: "15:20", q: "4K", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
-            { t: "Cyberpunk City: Unreal 6", c: "Gaming Hub", v: "1.1M", d: "08:45", q: "HDR", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640" },
+        const vids = [
+            { t: "Apple Vision Pro: Future", c: "Bhuban Tech", v: "2.4M", d: "15:20", q: "4K", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
+            { t: "Cyberpunk City: Edge", c: "Gaming Hub", v: "1.1M", d: "08:45", q: "HDR", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640" },
             { t: "AI Revolution 2026", c: "SHREE AI", v: "500K", d: "12:00", q: "8K", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640" }
         ];
 
-        document.getElementById('grid').innerHTML = data.map(v => `
+        document.getElementById('grid').innerHTML = vids.map(v => `
             <div class="v-card">
                 <div class="v-thumb">
                     <div class="v-badge">${v.q}</div>
@@ -267,38 +263,36 @@
             </div>
         `).join('');
 
-        let lastIndex = 0;
+        let currentIdx = 0;
         const updateInd = (el) => {
             const ind = document.getElementById('nav-indicator');
             const nav = document.querySelector('.bottom-nav');
             if (!ind || !nav || !el) return;
 
-            const currentIndex = parseInt(el.dataset.index);
             const rect = el.getBoundingClientRect();
             const nRect = nav.getBoundingClientRect();
+            const targetX = rect.left - nRect.left + (rect.width / 2) - (ind.offsetWidth / 2);
 
-            const left = rect.left - nRect.left + (rect.width / 2) - (ind.offsetWidth / 2);
-
-            const direction = currentIndex > lastIndex ? 'right' : 'left';
+            const targetIdx = parseInt(el.dataset.index);
+            const direction = targetIdx > currentIdx ? 'right' : 'left';
             ind.style.transformOrigin = direction === 'right' ? 'left center' : 'right center';
 
             ind.classList.add('moving');
-            ind.style.transform = `translateX(${left}px) scaleX(1.4)`;
+            ind.style.transform = `translateX(${targetX}px) scaleX(1.4)`;
 
             setTimeout(() => {
                 ind.classList.remove('moving');
-                ind.style.transform = `translateX(${left}px) scaleX(1)`;
-            }, 150);
+                ind.style.transform = `translateX(${targetX}px) scaleX(1)`;
+            }, 180);
 
-            lastIndex = currentIndex;
+            currentIdx = targetIdx;
         };
 
-        document.querySelectorAll('.n-item').forEach(item => {
+        document.querySelectorAll('.n-item[data-index]').forEach(item => {
             item.addEventListener('click', (e) => {
-                e.preventDefault();
                 document.querySelectorAll('.n-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
-                if (!item.querySelector('.plus-btn')) updateInd(item);
+                updateInd(item);
             });
         });
 
@@ -307,7 +301,7 @@
                 document.getElementById('splash').classList.add('hide');
                 const active = document.querySelector('.n-item.active');
                 updateInd(active);
-            }, 1500);
+            }, 1200);
         });
     </script>
 </body>
