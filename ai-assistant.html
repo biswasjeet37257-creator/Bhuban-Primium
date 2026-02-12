@@ -425,7 +425,7 @@
             synthesis.speak(utterance);
         }
 
-        function sendMessage(text) {
+        async function sendMessage(text) {
             const input = document.getElementById('user-input');
             const message = text || input.value.trim();
             if (!message) return;
@@ -436,6 +436,7 @@
             // Show typing indicator
             const typing = document.createElement('div');
             typing.className = 'message';
+            typing.id = 'typing-indicator';
             typing.innerHTML = `
                 <div class="message-avatar"><i data-lucide="sparkles" style="width:20px; height:20px;"></i></div>
                 <div class="message-content typing-indicator active">
@@ -449,57 +450,27 @@
             scrollToBottom();
 
             // Get AI response
-            setTimeout(() => {
-                typing.remove();
-                const response = getAIResponse(message);
+            try {
+                const response = await getAIResponse(message);
+                document.getElementById('typing-indicator').remove();
                 addMessage(response.text, 'ai');
                 if (response.speak) speak(response.text);
-            }, 1500);
+            } catch (err) {
+                document.getElementById('typing-indicator').remove();
+                addMessage("I'm having trouble connecting to my brain right now. Please try again later.", 'ai');
+            }
         }
 
-        function getAIResponse(message) {
+        async function getAIResponse(message) {
             const msg = message.toLowerCase();
 
-            // Greetings
-            if (msg.includes('hey shree') || msg.includes('hi shree') || msg.includes('hello shree')) {
-                return {
-                    text: "Hello! 👋 I'm Shree, your AI assistant. I'm here to help you with anything - from uploading videos to answering questions. How can I assist you today?",
-                    speak: true
-                };
-            }
-
-            if (msg.includes('how are you')) {
-                return {
-                    text: "I'm doing great, thank you for asking! 😊 I'm always ready to help you. How can I assist you today?",
-                    speak: true
-                };
-            }
-
-            // Weather (simulated)
-            if (msg.includes('weather')) {
-                return {
-                    text: "🌤️ The weather today is sunny with a high of 75°F (24°C). Perfect day for creating content! Note: For real-time weather, I'll need API integration.",
-                    speak: true
-                };
-            }
-
-            // Video upload help
+            // 1. Try Local Rules First (Faster for simple things)
             if (msg.includes('upload') || msg.includes('4k') || msg.includes('video')) {
                 return {
                     text: "📹 To upload a video:\n1. Click the Upload icon\n2. Drag & drop your video\n3. Add title & description\n4. Select quality (HD/2K/4K)\n5. Choose visibility\n6. Click Publish!\n\nFor 4K, ensure your video is 2160p resolution.",
                     speak: false
                 };
             }
-
-            // Capabilities
-            if (msg.includes('what can you do') || msg.includes('help')) {
-                return {
-                    text: "I can help you with:\n\n✅ Video upload guidance\n✅ Quality settings\n✅ SEO optimization\n✅ Analytics insights\n✅ General questions\n✅ Weather updates\n✅ Jokes & entertainment\n\nJust ask me anything!",
-                    speak: false
-                };
-            }
-
-            // Jokes
             if (msg.includes('joke')) {
                 const jokes = [
                     "Why don't programmers like nature? It has too many bugs! 😄",
@@ -512,9 +483,38 @@
                 };
             }
 
-            // Default
+            // 2. Try Backend API (Smart AI)
+            try {
+                // Check if user is logged in (token exists) - Optional for now or basic auth
+                // const token = localStorage.getItem('token'); 
+
+                const res = await fetch('http://localhost:5000/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer ${token}` // Uncomment if you enforce auth
+                    },
+                    body: JSON.stringify({ prompt: message })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    return { text: data.data, speak: true };
+                }
+            } catch (err) {
+                console.log("Backend AI failed, using fallback");
+            }
+
+            // 3. Fallback Responses
+            if (msg.includes('hey shree') || msg.includes('hi shree')) {
+                return {
+                    text: "Hello! 👋 I'm Shree, your AI assistant. Connect me to the backend to make me smarter!",
+                    speak: true
+                };
+            }
+
             return {
-                text: "I understand you're asking about: \"" + message + "\"\n\nI'm still learning! For now, I can help with video uploads, settings, and general questions. Try asking about uploading 4K videos or telling a joke!",
+                text: "I'm running in offline mode. Please start the backend server to enable my full AI capabilities powered by Gemini! 🧠",
                 speak: false
             };
         }

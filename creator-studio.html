@@ -299,7 +299,7 @@
             selectedQuality = quality;
         }
 
-        function publishVideo() {
+        async function publishVideo() {
             const title = document.getElementById('video-title').value;
             const desc = document.getElementById('video-desc').value;
             const category = document.getElementById('video-category').value;
@@ -310,7 +310,38 @@
                 return;
             }
 
-            // Save to localStorage
+            const publishBtn = document.querySelector('.publish-btn');
+            publishBtn.innerText = 'Publishing...';
+            publishBtn.disabled = true;
+
+            // Try to upload to backend
+            try {
+                const formData = new FormData();
+                formData.append('video', selectedFile);
+                formData.append('title', title);
+                formData.append('description', desc);
+                formData.append('category', category); // If backend supports category
+                formData.append('quality', selectedQuality); // If backend supports quality
+
+                // Mock user ID for now if no auth
+                // formData.append('user', '643f1b...'); 
+
+                const res = await fetch('http://localhost:5000/api/videos', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ Video published to Server successfully!');
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (err) {
+                console.log("Backend upload failed, using local fallback");
+            }
+
+            // Fallback: Save to localStorage (Simulation)
             const uploads = JSON.parse(localStorage.getItem('bhuban_uploads') || '[]');
             uploads.push({
                 id: Date.now(),
@@ -327,7 +358,7 @@
             });
             localStorage.setItem('bhuban_uploads', JSON.stringify(uploads));
 
-            alert('✅ Video published successfully!');
+            alert('✅ Video published locally (Backend offline)!');
             window.location.href = 'index.html';
         }
 

@@ -761,7 +761,9 @@
             <i data-lucide="more-vertical"></i>
         </div>
         <div class="v-main-video">
-            <img id="p-thumb" src="">
+            <video id="p-video" controls style="width:100%; height:100%; object-fit:cover; display:none;"
+                onerror="alert('Error loading video. Format might not be supported or file wasn\'t found.')"></video>
+            <img id="p-thumb" src="" style="width:100%; height:100%; object-fit:cover;">
             <div id="quality-menu"
                 style="display:none; position:absolute; top:60px; right:15px; background:#1a1a1e; border:1px solid #333; border-radius:12px; padding:10px; z-index:1000;">
                 <div style="font-weight:700; margin-bottom:10px; padding:0 10px;">Quality</div>
@@ -784,6 +786,9 @@
                 <div class="p-btn" onclick="shareVideo()"><i data-lucide="share-2"></i> Share</div>
                 <div class="p-btn" onclick="downloadVideo()"><i data-lucide="download"></i> Download</div>
                 <div class="p-btn" onclick="saveVideo()"><i data-lucide="plus-square"></i> Save</div>
+                <div class="p-btn" id="delete-btn" style="display:none; color:#ff3b30;" onclick="deleteCurrentVideo()">
+                    <i data-lucide="trash-2"></i> Delete
+                </div>
             </div>
             <div class="p-channel">
                 <div style="display:flex; align-items:center; gap:12px;">
@@ -846,8 +851,45 @@
             { t: "AI Coding Speedrun", v: "2.1M", img: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=400" }
         ];
 
-        function renderGrid() {
+        async function renderGrid() {
             const grid = document.getElementById('grid');
+
+            // 1. Try to fetch from Backend
+            try {
+                const res = await fetch('http://localhost:5000/api/videos');
+                const data = await res.json();
+                if (data.success && data.data.length > 0) {
+                    const backendVideos = data.data.map(v => ({
+                        t: v.title,
+                        c: v.user?.name || "Bhuban Creator",
+                        v: v.views + " views",
+                        d: "10:00",
+                        img: v.thumbnailUrl.startsWith('http') ? v.thumbnailUrl : `http://localhost:5000/uploads/${v.thumbnailUrl}`,
+                        videoUrl: v.videoUrl,
+                        id: v._id // Add ID for deletion
+                    }));
+                    // Add to beginning
+                    vids.unshift(...backendVideos);
+                }
+            } catch (err) {
+                console.log("Backend not connected, checking local storage...");
+            }
+
+            // 2. Add LocalStorage Uploads (Fallback)
+            // We check this regardless of backend status, so user sees all their attempts
+            const localUploads = JSON.parse(localStorage.getItem('bhuban_uploads') || '[]');
+            if (localUploads.length > 0) {
+                const localVideos = localUploads.map(v => ({
+                    t: v.title,
+                    c: "You (Local)",
+                    v: "0 views",
+                    d: "05:00",
+                    img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640"
+                }));
+                // Add these to top as well
+                vids.unshift(...localVideos);
+            }
+
             let html = vids.slice(0, 2).map((v, i) => createCard(v, i)).join('');
             html += `
                 <div class="shorts-shelf">
@@ -872,16 +914,88 @@
             return `<div class="v-card" onclick="openVideo(${idx})"><div class="v-thumb"><img src="${v.img}"><div class="v-dur">${v.d}</div></div><div class="v-info"><div class="v-av"></div><div class="v-det"><h3>${v.t}</h3><p>${v.c} • ${v.v} views</p></div></div></div>`;
         }
 
+        window.deleteCurrentVideo = async () => {
+            // Find current video
+            const title = document.getElementById('p-title').innerText;
+            const v = vids.find(v => v.t === title);
+
+            if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+
+            // 1. Backend Video
+            if (v && v.id) {
+                try {
+                    const res = await fetch(`http://localhost:5000/api/videos/${v.id}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        alert('✅ Video deleted from server!');
+                        window.location.reload();
+                    } else {
+                        alert('❌ Error: ' + (data.error || 'Server refused deletion'));
+                    }
+                } catch (err) {
+                    alert('❌ Connection error');
+                }
+                return;
+            }
+
+            // 2. Local Video (LocalStorage)
+            const localUploads = JSON.parse(localStorage.getItem('bhuban_uploads') || '[]');
+            const newUploads = localUploads.filter(upload => upload.title !== title);
+
+            if (newUploads.length < localUploads.length) {
+                localStorage.setItem('bhuban_uploads', JSON.stringify(newUploads));
+                alert('✅ Local upload deleted!');
+                window.location.reload();
+            } else {
+                alert('❌ Cannot delete this video (It might be a demo video)');
+            }
+        };
+
         window.openVideo = (idx, isShort = false) => {
             const v = isShort ? shorts[idx] : vids[idx];
             if (!v) return;
+
             document.getElementById('p-title').innerText = v.t;
             document.getElementById('p-stats').innerText = `${v.v} views • ${isShort ? 'Trending' : '1 day ago'}`;
             document.getElementById('p-channel').innerText = isShort ? "Shorts Creator" : v.c;
-            document.getElementById('p-thumb').src = v.img;
+
+            const videoEl = document.getElementById('p-video');
+            const thumbEl = document.getElementById('p-thumb');
+
+            // Check if we have a real video URL (from backend)
+            if (v.videoUrl) {
+                // Construct full URL if relative
+                const src = v.videoUrl.startsWith('http') ? v.videoUrl : `http://localhost:5000/uploads/${v.videoUrl}`;
+                videoEl.removeAttribute('src'); // Clear direct src
+                videoEl.innerHTML = `<source src="${src}" type="video/mp4">`;
+                videoEl.load();
+                videoEl.style.display = 'block';
+                thumbEl.style.display = 'none';
+                videoEl.play().catch(e => console.log("Autoplay blocked/failed", e));
+            } else {
+                // Fallback to image for hardcoded videos
+                thumbEl.src = v.img;
+                thumbEl.style.display = 'block';
+                videoEl.style.display = 'none';
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.innerHTML = ''; // Clear video source
+            }
+
+            // Show Delete Button if applicable
+            const delBtn = document.getElementById('delete-btn');
+            if (v.id || (v.c === "You (Local)" || v.c === "Bhuban Creator")) {
+                delBtn.style.display = 'flex';
+            } else {
+                delBtn.style.display = 'none';
+            }
+
             const o = document.getElementById('player-overlay');
             o.style.display = 'flex';
-            o.scrollTop = 0; // Ensure scroll-to-top on open
+            o.scrollTop = 0;
             setTimeout(() => o.classList.add('active'), 10);
             document.body.style.overflow = 'hidden';
             lucide.createIcons();
@@ -889,7 +1003,14 @@
 
         window.closeVideo = () => {
             const o = document.getElementById('player-overlay');
-            o.classList.remove('active'); setTimeout(() => o.style.display = 'none', 400);
+            o.classList.remove('active');
+
+            // Stop video
+            const v = document.getElementById('p-video');
+            v.pause();
+            v.currentTime = 0;
+
+            setTimeout(() => o.style.display = 'none', 400);
             document.body.style.overflow = 'auto';
             document.getElementById('quality-menu').style.display = 'none';
         };
