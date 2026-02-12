@@ -4,185 +4,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Bhuban | Premium Video V12.3</title>
+    <title>Bhuban | Premium Video Platform</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg-primary: #000000;
-            --bg-secondary: #000000;
+            --bg: #000;
             --accent: #ff3b30;
-            --text-primary: #ffffff;
-            --text-secondary: #8e8e93;
-            --glass: rgba(15, 15, 20, 0.95);
+            --glass: rgba(18, 18, 23, 0.85);
+            --sidebar-w: 240px;
+            --header-h: 64px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
         }
 
         body {
-            background: #000 !important;
-            color: white !important;
-            overflow-x: hidden;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        #desktop-header,
-        aside#sidebar,
-        #top-nav {
-            display: none !important;
-        }
-
-        .video-grid {
-            padding: 15px 15px 120px 15px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
             background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        .video-card {
-            width: 100%;
+        /* --- DESKTOP GRID LAYOUT --- */
+        .app-container {
+            display: grid;
+            grid-template-areas: "nav nav" "sidebar main";
+            grid-template-columns: var(--sidebar-w) 1fr;
+            grid-template-rows: var(--header-h) 1fr;
+            height: 100vh;
+            width: 100vw;
         }
 
-        .thumb {
+        /* --- DESKTOP HEADER --- */
+        header#desktop-header {
+            grid-area: nav;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: rgba(15, 15, 20, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        .search-box {
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 8px 20px;
+            width: 400px;
+            color: #fff;
+            outline: none;
+        }
+
+        /* --- DESKTOP SIDEBAR --- */
+        aside#sidebar {
+            grid-area: sidebar;
+            background: #000;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+        }
+
+        .side-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            color: #aaa;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .side-link:hover,
+        .side-link.active {
+            background: #1c1c1e;
+            color: #fff;
+        }
+
+        /* --- MAIN FEED --- */
+        main#main-content {
+            grid-area: main;
+            overflow-y: auto;
+            padding: 24px;
+            scroll-behavior: smooth;
+        }
+
+        .v-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .v-card {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .v-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .v-thumb {
             position: relative;
-            width: 100%;
             aspect-ratio: 16/9;
             background: #111;
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
         }
 
-        .thumb img {
+        .v-thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: red;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .dur {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-        }
-
-        .info {
+        .v-info {
             display: flex;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 12px;
         }
 
-        .av {
-            width: 40px;
-            height: 40px;
+        .v-av {
+            width: 36px;
+            height: 36px;
             background: #222;
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .det h3 {
-            font-size: 17px;
-            margin-bottom: 5px;
-            line-height: 1.3;
-            font-weight: 600;
+        .v-det h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            line-height: 1.4;
         }
 
-        .det p {
-            font-size: 14px;
+        .v-det p {
+            font-size: 13px;
             color: #888;
         }
 
+        /* --- MOBILE HUD (HIDDEN ON DESKTOP) --- */
         #mobile-bottom-nav {
-            display: flex !important;
-            position: fixed !important;
-            bottom: calc(24px + env(safe-area-inset-bottom)) !important;
-            top: auto !important;
-            left: 12px !important;
-            right: 12px !important;
-            height: 72px !important;
-            background: var(--glass) !important;
-            backdrop-filter: blur(50px) saturate(200%) !important;
-            -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
-            border-radius: 36px !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            z-index: 2147483647 !important;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
+            display: none;
         }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #888;
-            text-decoration: none;
-            position: relative;
-            flex: 1;
-            z-index: 10;
-            cursor: pointer;
-        }
+        /* --- MOBILE MEDIA QUERY (THE HYBRID SWITCH) --- */
+        @media screen and (max-width: 1024px) {
+            .app-container {
+                display: block;
+                overflow-y: auto;
+                height: auto;
+            }
 
-        .nav-item.active {
-            color: white;
-        }
+            header#desktop-header,
+            aside#sidebar {
+                display: none !important;
+            }
 
-        .nav-item i {
-            width: 24px;
-            height: 24px;
-        }
+            main#main-content {
+                padding: 15px;
+                padding-bottom: 120px;
+            }
 
-        .nav-item span {
-            font-size: 10px;
-            font-weight: 700;
-        }
+            .v-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
 
-        #nav-indicator {
-            position: absolute;
-            height: 54px;
-            width: 72px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            left: 0;
-            top: 50%;
-            margin-top: -27px;
-            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 1;
-            will-change: transform;
-            pointer-events: none;
-        }
+            /* SHOW FIXED MOBILE NAV */
+            #mobile-bottom-nav {
+                display: flex !important;
+                position: fixed !important;
+                bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+                left: 12px !important;
+                right: 12px !important;
+                height: 72px !important;
+                background: rgba(18, 18, 23, 0.95) !important;
+                backdrop-filter: blur(50px) saturate(200%) !important;
+                -webkit-backdrop-filter: blur(50px) saturate(200%) !important;
+                border-radius: 36px !important;
+                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                z-index: 999999 !important;
+                align-items: center;
+                justify-content: space-around;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
+            }
 
-        .create-btn {
-            background: var(--accent) !important;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white !important;
-            margin-bottom: 35px;
-            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
-            z-index: 10;
+            .n-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: #777;
+                text-decoration: none;
+                flex: 1;
+                z-index: 10;
+                cursor: pointer;
+            }
+
+            .n-item.active {
+                color: #fff;
+            }
+
+            .n-item span {
+                font-size: 10px;
+                font-weight: 800;
+                margin-top: 4px;
+            }
+
+            .n-item i {
+                width: 24px;
+                height: 24px;
+            }
+
+            #nav-indicator {
+                position: absolute;
+                height: 54px;
+                width: 72px;
+                background: rgba(255, 255, 255, 0.12);
+                border-radius: 20px;
+                left: 0;
+                top: 50%;
+                margin-top: -27px;
+                transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+                z-index: 1;
+                will-change: transform;
+                pointer-events: none;
+            }
+
+            .plus-btn {
+                background: var(--accent);
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff !important;
+                margin-bottom: 35px;
+                box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
+                z-index: 10;
+            }
         }
 
         #splash {
@@ -192,109 +269,129 @@
             width: 100vw;
             height: 100vh;
             background: #000;
-            z-index: 2147483647;
+            z-index: 1000000;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: 0.8s;
-            opacity: 1;
+        }
+
+        #splash h1 {
+            color: #ff3b30;
+            font-size: 38px;
         }
 
         #splash.hide {
             opacity: 0;
             pointer-events: none;
         }
-
-        #splash h1 {
-            font-size: 38px;
-            letter-spacing: -2px;
-            color: red;
-        }
     </style>
 </head>
 
 <body>
     <div id="splash">
-        <h1>BHUBAN V12.3</h1>
+        <h1>BHUBAN V13</h1>
     </div>
-    <main class="video-grid" id="grid"></main>
 
+    <div class="app-container">
+        <!-- Desktop Header -->
+        <header id="desktop-header">
+            <div class="logo"><i data-lucide="play"></i> BHUBAN</div>
+            <input type="text" class="search-box" placeholder="Search videos...">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #222; cursor: pointer;"></div>
+        </header>
+
+        <!-- Desktop Sidebar -->
+        <aside id="sidebar">
+            <a href="#" class="side-link active"><i data-lucide="home"></i> Home</a>
+            <a href="#" class="side-link"><i data-lucide="compass"></i> Explore</a>
+            <a href="#" class="side-link"><i data-lucide="play-square"></i> Library</a>
+            <div style="height: 1px; background: #222; margin: 20px 0;"></div>
+            <a href="#" class="side-link"><i data-lucide="clock"></i> History</a>
+            <a href="#" class="side-link"><i data-lucide="thumbs-up"></i> Liked</a>
+        </aside>
+
+        <!-- Main Feed (Both Desktop & Mobile) -->
+        <main id="main-content">
+            <div class="v-grid" id="grid"></div>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation (Targeted by Mobile Media Query) -->
     <nav id="mobile-bottom-nav">
         <div id="nav-indicator"></div>
-        <a class="nav-item active" data-index="0"><i data-lucide="home"></i><span>Home</span></a>
-        <a class="nav-item" data-index="1"><i data-lucide="compass"></i><span>Explore</span></a>
-        <div class="nav-item" style="pointer-events: none;">
-            <div class="create-btn" style="pointer-events: auto;"><i data-lucide="plus"></i></div>
+        <a class="n-item active" data-index="0"><i data-lucide="home"></i><span>Home</span></a>
+        <a class="n-item" data-index="1"><i data-lucide="compass"></i><span>Explore</span></a>
+        <div class="n-item" style="pointer-events: none;">
+            <div class="plus-btn" style="pointer-events: auto;"><i data-lucide="plus"></i></div>
         </div>
-        <a class="nav-item" data-index="3"><i data-lucide="play-square"></i><span>Library</span></a>
-        <a class="nav-item" data-index="4"><i data-lucide="user"></i><span>You</span></a>
+        <a class="n-item" data-index="3"><i data-lucide="play-square"></i><span>Library</span></a>
+        <a class="n-item" data-index="4"><i data-lucide="user"></i><span>You</span></a>
     </nav>
 
     <script>
-        (function () {
-            const vids = [
-                { id: 1, t: "Apple Vision Pro - Future", c: "TechMaster", v: "1.2M", d: "12:45", q: "4K", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
-                { id: 2, t: "Extreme Adventure: Edge", c: "NatureFocus", v: "850K", d: "08:12", q: "18+", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=640" },
-                { id: 3, t: "Code Craft: Systems", c: "CodeCraft", v: "3.5M", d: "45:00", q: "4K", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640" }
-            ];
+        lucide.createIcons();
 
-            const grid = document.getElementById('grid');
-            grid.innerHTML = vids.map(v => `
-                <div class="video-card">
-                    <div class="thumb">
-                        <div class="badge">${v.q}</div>
-                        <img src="${v.img}" onerror="this.src='https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640'">
-                        <div class="dur">${v.d}</div>
-                    </div>
-                    <div class="info">
-                        <div class="av"></div>
-                        <div class="det">
-                            <h3>${v.t}</h3>
-                            <p>${v.c} • ${v.v} views</p>
-                        </div>
+        const vids = [
+            { t: "Apple Vision Pro: The Tech Future", c: "Bhuban Labs", v: "2.4M", d: "15:20", img: "https://images.unsplash.com/photo-1684369175833-0bb652431669?q=80&w=640" },
+            { t: "Extreme Nature: Edge of Life", c: "NatureFocus", v: "850K", d: "08:12", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=640" },
+            { t: "The Code Revolution: Unreal 6", c: "Gaming World", v: "1.1M", d: "08:45", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=640" },
+            { t: "Advanced AI Systems 2026", c: "SHREE AI", v: "3.5M", d: "45:00", img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640" },
+            { t: "Siri vs ChatGPT: Comparison", c: "TechMaster", v: "500K", d: "12:00", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=640" }
+        ];
+
+        document.getElementById('grid').innerHTML = vids.map(v => `
+            <div class="v-card">
+                <div class="v-thumb">
+                    <img src="${v.img}">
+                    <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); padding:2px 6px; border-radius:4px; font-size:11px;">${v.d}</div>
+                </div>
+                <div class="v-info">
+                    <div class="v-av"></div>
+                    <div class="v-det">
+                        <h3>${v.t}</h3>
+                        <p>${v.c} • ${v.v} views</p>
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
 
-            let currentIdx = 0;
-            const updateInd = (el) => {
-                const ind = document.getElementById('nav-indicator');
-                const nav = document.getElementById('mobile-bottom-nav');
-                if (!ind || !nav || !el) return;
+        let currentIdx = 0;
+        const updateInd = (el) => {
+            const ind = document.getElementById('nav-indicator');
+            const nav = document.getElementById('mobile-bottom-nav');
+            if (!ind || !nav || !el || window.getComputedStyle(nav).display === 'none') return;
 
-                const rect = el.getBoundingClientRect();
-                const nRect = nav.getBoundingClientRect();
-                const targetX = rect.left - nRect.left + (rect.width / 2) - (ind.offsetWidth / 2);
+            const rect = el.getBoundingClientRect();
+            const nRect = nav.getBoundingClientRect();
+            const targetX = rect.left - nRect.left + (rect.width / 2) - (ind.offsetWidth / 2);
 
-                const targetIdx = parseInt(el.dataset.index);
-                const direction = targetIdx > currentIdx ? 'right' : 'left';
-                ind.style.transformOrigin = direction === 'right' ? 'left center' : 'right center';
+            const targetIdx = parseInt(el.dataset.index);
+            const direction = targetIdx > currentIdx ? 'right' : 'left';
+            ind.style.transformOrigin = direction === 'right' ? 'left center' : 'right center';
+            ind.style.transform = `translateX(${targetX}px) scaleX(1.4)`;
 
-                ind.style.transform = `translateX(${targetX}px) scaleX(1.4)`;
+            setTimeout(() => {
+                ind.style.transform = `translateX(${targetX}px) scaleX(1)`;
+            }, 180);
+            currentIdx = targetIdx;
+        };
 
-                setTimeout(() => {
-                    ind.style.transform = `translateX(${targetX}px) scaleX(1)`;
-                }, 180);
-
-                currentIdx = targetIdx;
-            };
-
-            document.querySelectorAll('.nav-item[data-index]').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                    updateInd(item);
-                });
+        document.querySelectorAll('.n-item[data-index]').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.n-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                updateInd(item);
             });
+        });
 
-            window.addEventListener('load', () => {
-                lucide.createIcons();
-                setTimeout(() => {
-                    document.getElementById('splash').classList.add('hide');
-                    updateInd(document.querySelector('.nav-item.active'));
-                }, 1200);
-            });
-        })();
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('hide');
+                const active = document.querySelector('.n-item.active');
+                updateInd(active);
+            }, 1200);
+        });
     </script>
 </body>
 
